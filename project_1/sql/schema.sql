@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS weather.cities (
 -- Daily weather table
 CREATE TABLE IF NOT EXISTS weather.weather_records (
     record_id SERIAL PRIMARY KEY,
-    city_id INT NOT NULL REFERENCES weather.cities(city_id),
+    city_id INT NOT NULL REFERENCES weather.cities(city_id) ON DELETE CASCADE,
     weather_date DATE NOT NULL,
     temp_max NUMERIC(5,2),
     temp_min NUMERIC(5,2),
