@@ -1,13 +1,18 @@
-CREATE TABLE IF NOT EXISTS cities (
+-- Create a dedicated schema for this project
+CREATE SCHEMA IF NOT EXISTS weather;
+
+-- Cities lookup table
+CREATE TABLE IF NOT EXISTS weather.cities (
     city_id SERIAL PRIMARY KEY,
     city_name VARCHAR(100) NOT NULL UNIQUE,
     latitude NUMERIC(8,4),
     longitude NUMERIC(8,4)
 );
 
-CREATE TABLE IF NOT EXISTS weather_records (
+-- Daily weather table
+CREATE TABLE IF NOT EXISTS weather.weather_records (
     record_id SERIAL PRIMARY KEY,
-    city_id INT NOT NULL REFERENCES cities(city_id),
+    city_id INT NOT NULL REFERENCES weather.cities(city_id),
     weather_date DATE NOT NULL,
     temp_max NUMERIC(5,2),
     temp_min NUMERIC(5,2),

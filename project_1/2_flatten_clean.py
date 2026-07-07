@@ -35,9 +35,18 @@ print(df.info())
 
 df["date"] = pd.to_datetime(df["date"])
 
+print("Before cleaning:")
 print(df.isnull().sum())
-print("Duplicate rows:", df.duplicated().sum())
+print("Duplicates:", df.duplicated().sum())
+
+df["date"] = pd.to_datetime(df["date"])
+
+
+df = df.drop_duplicates()
+df = df.dropna()
+
+print("\nAfter cleaning:")
+print(df.isnull().sum())
+print("Duplicates:", df.duplicated().sum())
 
 df.to_csv("data/weather_flat.csv", index=False)
-
-print("Saved data/weather_flat.csv")

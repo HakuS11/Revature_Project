@@ -1,0 +1,27 @@
+# venv
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Env files
+.env
+.env.*
+
+# Data outputs (keep raw JSONs, ignore CSVs)
+project_1/data/*.csv
+
+# Bytecode in subfolders
+project_1/**/__pycache__/
