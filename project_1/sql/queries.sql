@@ -31,7 +31,6 @@ JOIN weather.cities c
     ON gs.city_id = c.city_id
 ORDER BY gs.largest_temp_gap DESC;
 
--- Most precipitation
 -- Most precipitation per city, with date
 WITH max_rain AS (
     SELECT
