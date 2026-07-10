@@ -1,23 +1,28 @@
 import json
 from pathlib import Path
 
+import pandas as pd
+
 from dao.city_dao import CityDAO
 from dao.weather_dao import WeatherDAO
 
-
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
 JSON_FILES = [
-    BASE_DIR / "data" / "mesa_raw.json",
-    BASE_DIR / "data" / "tokyo_raw.json",
-    BASE_DIR / "data" / "london_raw.json",
+    DATA_DIR / "mesa_raw.json",
+    DATA_DIR / "tokyo_raw.json",
+    DATA_DIR / "london_raw.json",
 ]
+
+CSV_FILE = DATA_DIR / "weather_flat.csv"
 
 
 def load_weather_data():
     city_dao = CityDAO()
     weather_dao = WeatherDAO()
 
-    # Insert cities first so weather records can reference city_id
+    # Insert cities first from raw JSON so latitude and longitude are included
     for file_path in JSON_FILES:
         with open(file_path, "r") as f:
             data = json.load(f)
@@ -30,30 +35,20 @@ def load_weather_data():
 
     city_id_map = city_dao.get_city_id_map()
 
-    # Insert weather records after city IDs are available
-    for file_path in JSON_FILES:
-        with open(file_path, "r") as f:
-            data = json.load(f)
+    # Load cleaned weather rows from CSV
+    df = pd.read_csv(CSV_FILE)
 
-        city_name = data["city"]
-        city_id = city_id_map[city_name]
-        daily = data["daily"]
+    for _, row in df.iterrows():
+        city_id = city_id_map[row["city"]]
 
-        dates = daily["time"]
-        temp_maxes = daily["temperature_2m_max"]
-        temp_mins = daily["temperature_2m_min"]
-        precipitation_sums = daily["precipitation_sum"]
-        windspeed_maxes = daily["windspeed_10m_max"]
-
-        for i in range(len(dates)):
-            weather_dao.insert_weather_record(
-                city_id,
-                dates[i],
-                temp_maxes[i],
-                temp_mins[i],
-                precipitation_sums[i],
-                windspeed_maxes[i]
-            )
+        weather_dao.insert_weather_record(
+            city_id,
+            row["date"],
+            row["temp_max"],
+            row["temp_min"],
+            row["precipitation_sum"],
+            row["windspeed_max"]
+        )
 
 
 if __name__ == "__main__":
